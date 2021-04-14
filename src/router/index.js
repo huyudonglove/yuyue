@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import login from '../components/log/login'
 Vue.use(Router)
 const originalPush = Router.prototype.push
 Router.prototype.push = function push (location) {
@@ -16,12 +15,6 @@ export default new Router({
       path: '/',
       name: 'home',
       component: home
-    },
-    {
-      path:'/login',
-      name:'login',
-      component:login
-     
     }
   ]
 })
