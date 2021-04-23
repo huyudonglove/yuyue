@@ -1,7 +1,6 @@
 import http from '../http'
 import {loadRequest} from '../util' //loading遮罩层
 import { Message,Loading } from 'element-ui';
-
 /** 获取session -   w*/
 export function getSession(params) {
   return http.get(`/api/analyse/third-party/getSession`, params)
@@ -9,7 +8,7 @@ export function getSession(params) {
 
 /** 请求验证码 -   w*/
 export function getCode(params) {
-  return http.post(`/api/analyse/third-party/getVerifyCode`, params)
+  return http.post(`/api/analyse/third-party/sendCheckCode`, params)
 }
 
 /** 校验验证码 -   w*/
@@ -51,3 +50,24 @@ export function listByMobile(params){
     })
   })
 }
+
+// /**
+//    * 通过openToken换取accessToken
+//    * @openToken
+//    */
+//  export function _fetchToken (openToken) {
+//   return request.post({
+//     reqMethod: 'account.access.getChildToken',
+//     params: {
+//       openToken
+//     }
+//   })
+// }
+
+
+// export function getUserData (params) {
+// return request.post({
+//   reqMethod: 'account.userdata.getUserData',
+//   params
+// })
+// }

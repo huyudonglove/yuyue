@@ -8,7 +8,26 @@
   <body style="padding: 0;margin: 0;">
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script>
+      window.onload = function(){
+          getRem(1080,100)
+      };
+      window.onresize = function(){
+          getRem(1080,100)
+      };
+      function getRem(pwidth,prem){
+          var html = document.getElementsByTagName("html")[0];
+          var oWidth = document.body.clientWidth || document.documentElement.clientWidth;
+          html.style.fontSize = oWidth/pwidth*prem + "px";
+      }
+  </script>
   </body>
   <script>
   </script>
+   <style>
+    body,html,#app{
+      height: 100%;
+      -webkit-tap-highlight-color:rgba(0,0,0,0);
+    }
+  </style>
 </html>

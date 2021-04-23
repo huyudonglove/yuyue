@@ -44,10 +44,10 @@ axios.interceptors.response.use(
   response => {
     //debugger;
     if (response.data.errCode == 2) {
-      router.push({
-        path: "/login",
-        querry: { redirect: router.currentRoute.fullPath }//从哪个页面跳转
-      })
+      // router.push({
+      //   path: "/login",
+      //   querry: { redirect: router.currentRoute.fullPath }//从哪个页面跳转
+      // })
     }
     return response;
   },
@@ -76,9 +76,9 @@ axios.interceptors.response.use(
       //   message: error.response.data.message,
       //   type: 'error'
       // })
-      router.push({
-        path: "/login"
-      })
+      // router.push({
+      //   path: "/login"
+      // })
     }
     return Promise.reject(error)
   }
