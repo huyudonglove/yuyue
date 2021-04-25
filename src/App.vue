@@ -9,6 +9,7 @@ export default {
   name: 'App',
   data(){
     return{
+      a:'',
       isRouterActive:true
     }
   },
@@ -17,6 +18,27 @@ export default {
       reload:this.reload,
       replace:this.replace
     }
+  },
+  mounted() {
+    document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+  });
+  document.addEventListener('dblclick', function (e) {
+    e.preventDefault();
+  });
+  document.addEventListener('touchstart', function (event) {
+    if (event.touches.length > 1) {
+      event.preventDefault();
+    }
+  });
+  var lastTouchEnd = 0;
+  document.addEventListener('touchend', function (event) {
+    var now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, false);
   },
   methods:{
     reload(){
@@ -161,27 +183,31 @@ border-color: #86aae6;
   padding: 0px ;
 }
 .myOrder{
-display: inline-block;
-background: url('./assets/Btn_myreservation.png') no-repeat center center;
+display:block;
+background: url('./assets/Btn_myreservation.png') no-repeat;
 background-size:100% auto ;
 width:7.53rem;
 height: 2.25rem;
 border: 0px none;
+overflow: hidden;
 cursor: pointer;
+margin: 0px auto;
 }
 .ar{
-display: inline-block;
+display:block;
 
-background: url('./assets/Btn_ARglasses.png') no-repeat center center;
+background: url('./assets/Btn_ARglasses.png') no-repeat;
 background-size:100% auto ;
 width:7.53rem;
 height: 2.25rem;
+overflow: hidden;
 border: 0px none;
 cursor: pointer;
+margin: 0px auto;
 }
 .phone{
 display: inline-block;
-background: url('./assets/Btn_phone.png') no-repeat center center;
+background: url('./assets/Btn_phone.png') no-repeat;
 width:7.42rem;
 height: 2.25rem;
 background-size:100% auto ;
@@ -270,7 +296,7 @@ line-height: 1.2rem;
 .orderDiv{
   margin-top: 8.8rem;
   height: 10rem;
-  text-align: center;
+  /* text-align: center; */
 }
 
 .downLoad{
@@ -295,4 +321,7 @@ line-height: 1.2rem;
     border-radius: 0.2rem;
     text-decoration: none;
 }
+ .el-select--medium{
+      vertical-align: bottom !important;
+    }
 </style>

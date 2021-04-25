@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%" class="container">
+  <div style="width:100%" class="container" id="container">
    <div style="position:absolute;z-index:999">
        <!-- {{isApp}}{{token}} {{option11}} cookcook:{{cookcook}} r:{{r}} getAuthorityInfo:{{getAuthorityInfo}} -->
    </div>
@@ -59,7 +59,7 @@
       <div class="activity">
        <div style="font-weight:bold">
           <div class="left activityLeft">
-          <i class="i Atlas_location "></i> 活动时间:
+          <i class="i Atlas_time"></i> 活动时间:
           </div>
           <div class="right activityRight">
             <p>
@@ -72,7 +72,7 @@
        </div>
        <div style="clear:both;font-weight:bold">
           <div class="left activityLeft">
-         <i class=" i Atlas_time "></i> 活动地址:
+         <i class="i Atlas_location"></i> 活动地址:
           </div>
           <div class="right activityRight">
             <p>
@@ -238,14 +238,15 @@
        <div class="arPart">
          <img src="../assets/Image_guidemap.png" width="100%"/>
        </div>
-      <el-dialog title="您已预约的场次" :visible.sync="orderVisible" :close-on-click-modal='false' width='90%' @close="closeOrderVisible">
+      <el-dialog title="您已预约的场次" :visible.sync="orderVisible" :close-on-click-modal='false' width='90%' @close="closeOrderVisible" id="orderVisible">
         <p style="text-align:center;color:#495a89" >输入您的手机号码，为您查询预约记录</p>
         <el-form :model="formOrder" label-width="110px" :rules="rules" ref="formOrder" style="margin-top:0.5rem;padding-bottom:1.7rem">
         <el-form-item label="您的手机号码" prop="mobile">
           <el-input v-model.number="formOrder.mobile"></el-input>
         </el-form-item>
         <el-form-item label="短信验证码" prop="checkCode">
-          <el-input v-model="formOrder.checkCode" style="width:50%;display:line-block;padding: 12px 0px;" ></el-input><el-button type="primary" style="width:50%;display:line-block" @click="getMobildCode(3)" :disabled='!getCodeAbeled||timeOut <60'>{{timeOut==60?'获取验证码':timeOut+'s'}}</el-button>
+          <el-input v-model="formOrder.checkCode" style="width:50%;display:line-block;padding: 0px 0px;" ></el-input>
+          <el-button type="primary" style="width:48%;display:line-block" @click="getMobildCode(3)" :disabled='!getCodeAbeled||timeOut <60'>{{timeOut==60?'获取验证码':timeOut+'s'}}</el-button>
         </el-form-item>
       </el-form>
       <div style="text-align:center">
@@ -254,17 +255,7 @@
     </el-dialog>
     <!--  orderVisible end -->
       <!--  orderListVisible start -->
-      <el-dialog  :visible.sync="orderListVisible" :close-on-click-modal='false' width='90%' class="dialogBg" :show-close='false' top="0.25rem">
-        <!-- <p style="text-align:center;font-weight:700">
-          您预约的手机号码是
-        </p> -->
-        <p style="text-align:center;font-weight:700;margin-top:4.4rem;font-size:0.54rem;color:#aeb0be;height:0.4rem" >
-          {{formOrder.mobile}}
-        </p>
-        <div style="margin-top:3rem;text-align:center;height:5.5rem;color:#070f26;font-size:0.4rem;" v-if="!searchListMsg.length">
-          您没有预约场次!
-        </div>
-        <div style="margin-top:2rem;text-align:center;height:6.5rem;color:#070f26;overflow-y:scroll;font-size:0.4rem;" v-if="searchListMsg.length">  
+       <div style="margin-top:7.5rem;text-align:center;height:6.5rem;color:#070f26;overflow-y:scroll;font-size:0.4rem;position: fixed;z-index:999999999999;top:0;margin-left:50%;transform: translateX(-50%);width:8rem"  id="searchListMsg" v-if="searchListMsg.length&&orderListVisible">  
         <div  v-for="(item,i) in searchListMsg" :key="i" style="margin-bottom:0.6rem;" >
           <p>
             {{item.bookedDate}}
@@ -274,31 +265,56 @@
           </p>
         </div>
         </div>
+      <el-dialog  :visible.sync="orderListVisible" :close-on-click-modal='false' width='90%' class="dialogBg" :show-close='false' top="0.25rem" id="orderListVisible"  style="positon:relative">
+        <!-- <p style="text-align:center;font-weight:700">
+          您预约的手机号码是
+        </p> -->
+        <p style="text-align:center;font-weight:700;margin-top:4.4rem;font-size:0.54rem;color:#aeb0be;height:0.4rem" >
+          {{formOrder.mobile}}
+        </p>
+        <div style="margin-top:3rem;text-align:center;height:5.5rem;color:#070f26;font-size:0.4rem;" v-if="!searchListMsg.length">
+          您没有预约场次!
+        </div>
+        <div style="margin-top:2rem;text-align:center;height:6.5rem;color:#070f26;overflow-y:scroll;font-size:0.4rem;positon:absolute;z-index:99999999;top:1rem" v-if="searchListMsg.length" id="searchListMsg" >  
+        <!-- <div  v-for="(item,i) in searchListMsg" :key="i" style="margin-bottom:0.6rem;" >
+          <p>
+            {{item.bookedDate}}
+          </p>
+          <p>
+          {{item.floor}}楼—{{item.sequenceName}}
+          </p>
+        </div> -->
+        </div>
          <div style="width:0.4rem;height:0.2rem;margin:0px auto;margin-top:-0.5rem;" v-if="searchListMsg.length>3">
            <img src="../assets/arrow.png" width="100%" />
         </div>
         <div style="text-align:center">
           <!-- <p>温馨提示</p> -->
-          <p style="margin-top:1.4rem">
+          <p style="margin-top:1.4rem;line-height:0.32rem">
             请截图保存本页,到场后向工作人员出示
           </p>
           <p>
-            并务必携带<span style="color:#f04646">身份证或其他有效证件</span>现场领取眼镜
+            并务必携带<span style="color:#f04646;line-height:0.32rem">身份证或其他有效证件</span>现场领取眼镜
           </p>
         </div>
       <div style="text-align:center">
         <el-button type="primary" @click="yyOrder" class="newBtn">确认</el-button>
       </div>
     </el-dialog>
+   
     <!--  orderListVisible end -->
     <!-- registerVisible start -->
-      <el-dialog title="请输入您的预约信息" :visible.sync="registerVisible" :close-on-click-modal='false' @closed="closedOrderVisible('form')" width='90%'>
+      <el-dialog title="请输入您的预约信息" :visible.sync="registerVisible" :close-on-click-modal='false' @closed="closedOrderVisible('form')" width='90%' id="registerVisible">
       <el-form :model="form" label-width="110px" :rules="rules" ref="form" style="margin-top:0.5rem;padding-bottom:1.7rem">
         <el-form-item label="您的手机号码" prop="mobile">
           <el-input v-model.number="form.mobile"></el-input>
         </el-form-item>
-        <el-form-item label="短信验证码" prop="checkCode">
-          <el-input v-model="form.checkCode" style="width:50%;display:line-block;padding: 12px 0px;" ></el-input><el-button type="primary" style="width:50%;display:line-block" @click="getMobildCode(1)" :disabled='!getCodeAbeled||timeOut <60 '>{{timeOut==60?'获取验证码':timeOut+'s'}}</el-button>
+        <!-- <el-form-item label="短信验证码" prop="checkCode">
+          <el-input v-model="form.checkCode" style="width:50%;display:line-block;padding: 0px 0px;" ></el-input><el-button type="primary" style="width:48%;display:line-block" @click="getMobildCode(1)" :disabled='!getCodeAbeled||timeOut <60 '>{{timeOut==60?'获取验证码':timeOut+'s'}}</el-button>
+        </el-form-item> -->
+         <el-form-item label="短信验证码" prop="checkCode">
+          <el-input v-model="form.checkCode"  style="width:50%;display:line-block;padding: 0px 0px;" ></el-input>
+          <el-button type="primary" style="width:48%;display:line-block" @click="getMobildCode(1)" :disabled='!getCodeAbeled||timeOut <60 '>{{timeOut==60?'获取验证码':timeOut+'s'}}</el-button>
         </el-form-item>
       </el-form>
       <div style="text-align:center">
@@ -307,7 +323,7 @@
     </el-dialog>
     <!-- registerVisible end -->
     <!--  selectOrderVisible start -->
-      <el-dialog title="请选择预约的场次" :visible.sync="selectOrderVisible" :close-on-click-modal='false' @closed="closedOrderVisible('formSize')" width='90%' >
+      <el-dialog title="请选择预约的场次" :visible.sync="selectOrderVisible" :close-on-click-modal='false' @closed="closedOrderVisible('formSize')" width='90%' id="selectOrderVisible"  >
       <el-form :model="formSize" label-width="110px" :rules="ruleSize" ref="formSize" style="margin-top:0.5rem;padding-bottom:0.4rem">
         <el-form-item label="观看楼层" prop="floor">
           <el-select v-model="formSize.floor" placeholder="请选择" style="width:100%" :popper-append-to-body="false">
@@ -330,6 +346,7 @@
           value-format="yyyy-MM-dd"
           format="yyyy-MM-dd"
           :picker-options="pickerOptions"
+          @focus="forbid"
           >
         </el-date-picker>
         </el-form-item>
@@ -349,7 +366,8 @@
           <el-input v-model.number="formSize.mobile"></el-input>
         </el-form-item>
         <el-form-item label="短信验证码" prop="checkCode">
-          <el-input v-model="formSize.checkCode" style="width:50%;display:line-block;padding: 12px 0px;"></el-input><el-button  type="primary" style="width:50%;display:line-block" @click="getMobildCode(2)" :disabled='!getCodeAbeled||timeOut <60' >{{timeOut==60?'获取验证码':timeOut+'s'}}</el-button>
+          <el-input v-model="formSize.checkCode" style="width:50%;display:line-block;padding: 0px;"></el-input>
+          <el-button  type="primary" style="width:48%;display:line-block" @click="getMobildCode(2)" :disabled='!getCodeAbeled||timeOut <60' >{{timeOut==60?'获取验证码':timeOut+'s'}}</el-button>
         </el-form-item>
       </el-form>
       <div style="text-align:center;margin-bottom:1.52rem">
@@ -358,7 +376,7 @@
     </el-dialog>
     <!--  selectOrderVisible end -->
     <!--  orderSuccessVisible start -->
-      <el-dialog title="" :visible.sync="orderSuccessVisible" class="dialogBg dialogBg2" :show-close='false' top="0.25rem" width='90%'>
+      <el-dialog title="" :visible.sync="orderSuccessVisible" class="dialogBg dialogBg2" :show-close='false' top="0.25rem" width='90%' id='orderSuccessVisible'>
         <!-- <h2 style="text-align:center;font-weight:700">
           恭喜您预约成功！
         </h2> -->
@@ -366,7 +384,7 @@
           您预约的手机号码是
         </p> -->
         <p style="text-align:center;font-weight:700;margin-top:4.4rem;font-size:0.54rem;color:#aeb0be;height:0.4rem" >
-          {{formOrder.mobile}}
+          {{successMsg.mobile}}
         </p>
         <!-- <p style="text-align:center;font-weight:700">
           您的预约时间是
@@ -381,20 +399,20 @@
         </div>
        <div style="text-align:center">
           <!-- <p>温馨提示</p> -->
-          <p style="margin-top:1.4rem">
+          <p style="margin-top:1.4rem;line-height:0.32rem">
             请截图保存本页,到场后向工作人员出示
           </p>
           <p>
-            并务必携带<span style="color:#f04646">身份证或其他有效证件</span>现场领取眼镜
+            并务必携带<span style="color:#f04646;line-height:0.32rem">身份证或其他有效证件</span>现场领取眼镜
           </p>
         </div>
       <div style="text-align:center">
-        <el-button type="primary" @click="orderSuccessVisible=false" class="newBtn">确认</el-button>
+        <el-button type="primary" @click="orderSuccessVisible=false;canScroll();" class="newBtn">确认</el-button>
       </div>
     </el-dialog>
     <!--  orderSuccessVisible end -->
     <!--  mobileSuccessVisible start -->
-      <el-dialog title="" :visible.sync="mobileSuccessVisible" :close-on-click-modal='false' width='7.5rem' class="noHeader dialogBg3">
+      <el-dialog title="" :visible.sync="mobileSuccessVisible" :close-on-click-modal='false' width='7.5rem' class="noHeader dialogBg3" id="mobileSuccessVisible">
         <div style="width:2.09rem;height:2.05rem;margin:0.5rem auto 0">
           <img src="../assets/happy.png"  width="100%"/>
         </div>
@@ -409,17 +427,17 @@
     </el-dialog>
     <!--  mobileSuccessVisible end -->
     <!--  orderFailVisible start -->
-      <el-dialog title="" :visible.sync="orderFailVisible" :close-on-click-modal='false' width='7.5rem' class="noHeader dialogBg3" :show-close='false'>
+      <el-dialog title="" :visible.sync="orderFailVisible" :close-on-click-modal='false' width='7.5rem' class="noHeader dialogBg3" :show-close='false' id='orderFailVisible'>
         <div style="width:1.18rem;height:1.03rem;margin:0.5rem auto 0">
           <img src="../assets/sad.png"  width="100%"/>
         </div>
         <span style="text-align:center;font-weight:700;display:block">
           非常抱歉
         </span>
-        <h3 style="text-align:center;font-weight:700">
+        <h3 style="text-align:center;font-weight:700;line-height:0.5rem">
           {{errorMsg}}
         </h3>
-        <p style="text-align:center;font-weight:700" v-if="msgCode==-11||msgCode==-12||msgCode==-13">
+        <p style="text-align:center;font-weight:700;line-height:0.4rem" v-if="msgCode==-11||msgCode==-12||msgCode==-13">
           请更换其他场次
         </p>
       <div style="text-align:center">
@@ -428,7 +446,7 @@
     </el-dialog>
     <!--  orderFailVisible end -->
      <!--  error start -->
-      <el-dialog title="" :visible.sync="errorVisible" :close-on-click-modal='false' width='7.5rem' class="noHeader dialogBg3" :show-close='false'>
+      <el-dialog title="" :visible.sync="errorVisible" :close-on-click-modal='false' width='7.5rem' class="noHeader dialogBg3" :show-close='false' id="errorVisible">
         <div style="width:1.18rem;height:1.03rem;margin:0.5rem auto 0">
           <img src="../assets/sad.png"  width="100%"/>
         </div>
@@ -441,7 +459,7 @@
     </el-dialog>
     <!--  error end -->
       <!--  phoneList start -->
-      <el-dialog title="" :visible.sync="phoneListVisible" :close-on-click-modal='false' width='90%' class="noHeader phoneDialog" :show-close='false' top="0.8rem">
+      <el-dialog title="" :visible.sync="phoneListVisible" :close-on-click-modal='false' width='90%' class="noHeader phoneDialog" :show-close='false' top="0.5rem" id="phoneListVisible">
           <div style="height:12.8rem;overflow-y:scroll">
             <el-table
               :data="tableData"
@@ -533,6 +551,7 @@ export default {
         }
       };
     return {
+      a:'',
       tableData:[],
       tableData2:[
       {"serie":"Vivo X系列","name":"X50 Pro+","version":"10","date":"2020年7月"},
@@ -853,6 +872,8 @@ tableData1:[
     }
   },
   created () {
+
+
     if(this.$route.query.platform){
        this.platform= parseInt(this.$route.query.platform);
        this.errorVisible=false//错误信息
@@ -871,11 +892,29 @@ tableData1:[
   mounted() {
     this.getAuthorityInfo=getAuthorityInfo()
     // console.log(this.getAuthorityInfo,'this.getAuthorityInfo')
-     
   },
   computed: {
   },
   methods: {
+    noScroll(id){
+      let stop = document.querySelector(id);  
+      stop.addEventListener("touchmove", (event) => {
+       this.a=event
+          event.preventDefault();  //阻止默认行为                 
+          event.stopPropagation(); //阻止冒泡  
+      }, false)
+    },
+    canScroll(id){
+      let cancelStop = document.querySelector(id);  
+      cancelStop.addEventListener("touchmove", (event) => {  
+          event.returnValue = true;   //取消阻止默认行为                              
+          event.cancelBubble = true;  //取消阻止冒泡                          
+      }, false)
+    },
+     forbid(){
+    //禁止软键盘弹出
+    document.activeElement.blur();
+     },
     phoneBtnClick(type){
       if(type==1){
         this.tableData=this.tableData1
@@ -892,7 +931,8 @@ tableData1:[
     // 改变日期
     changeDate(){
       // this.formSize.sequence=''
-      this.getSequenceList()
+      this.getSequenceList();
+      this.canScroll('selectOrderVisible')
     },
     // 获取session
     getSession(){
@@ -953,11 +993,14 @@ tableData1:[
              }else{
                this.errorMsg=res.msg
                this.orderFailVisible=true
+               this.noScroll('#orderFailVisible');
              }
+              
                }else{
                 this.successMsg=res.data
                 this.selectOrderVisible=false;
                 this.orderSuccessVisible=true;
+                this.noScroll('#orderSuccessVisible');
                 this.$refs[formName].resetFields();
                 this.getCodeAbeled=false;
                 this.timeOut=60
@@ -970,6 +1013,7 @@ tableData1:[
                }else{
                  this.timeOut=60
                  this.mobileSuccessVisible=true;
+                 this.noScroll('#mobileSuccessVisible');
                  this.registerVisible=false;
                  this.getCodeAbeled=false
                  this.$refs[formName].resetFields();
@@ -987,18 +1031,21 @@ tableData1:[
    myOrder(){
      this.changeType=3;
      this.orderVisible=true;
-     this.getCodeAbeled=false
+     this.noScroll('#orderVisible');
+     this.getCodeAbeled=false;
      this.$nextTick(()=>{
      this.$refs['formOrder'].resetFields();
      })
    },
    selectOrder(){
      this.selectOrderVisible=true;
+     this.noScroll('#selectOrderVisible');
      this.changeType=1;
      this.getSequenceList()
    },
    mobileLook(){
-    this.registerVisible=true
+    this.registerVisible=true;
+    this.noScroll('#registerVisible');
     this.changeType=2
    },
    changeSequence(val){
@@ -1018,6 +1065,7 @@ tableData1:[
         this.orderVisible=false;
         this.timeOut=60;
         this.orderListVisible=true
+        this.noScroll('#orderListVisible');
         // this.$refs[formName].resetFields();
         this.getCodeAbeled=false
             }
@@ -1030,7 +1078,7 @@ tableData1:[
    }) 
    },
    yyOrder(){
-    this.orderListVisible=false
+    this.orderListVisible=false;
     this.$refs['formOrder'].resetFields();
    },
    setMyInterval(){
@@ -1138,7 +1186,7 @@ tableData1:[
                         // console.log(12)
                         commonApi.getSession().then(r => {
                           // this.r=r
-                           this.cookcook=r+'wu缓存'
+                          //  this.cookcook=r+'wu缓存'
                           if (r.code === 0) {
                             let option = {
                               appId: '00096efe4ee1450eb8481e8dae5fb447',
@@ -1148,7 +1196,7 @@ tableData1:[
                               sessionKey: r.data.sessionKey,
                               sessionSecret: r.data.sessionSecret
                             }
-                            this.option11=option
+                            // this.option11=option
                             this.openApp(option)
                           }
                         })
@@ -1156,7 +1204,7 @@ tableData1:[
                         // console.log(13,re.data.uid,rep.data)
                         let obj =
                           getAuthorityInfo() && JSON.parse(getAuthorityInfo())
-                          this.cookcook=obj+'有缓存'
+                          // this.cookcook=obj+'有缓存'
                         let option = {
                           appId: '00096efe4ee1450eb8481e8dae5fb447',
                           // appId: this.info.sourceId,
@@ -1165,7 +1213,7 @@ tableData1:[
                           sessionKey: obj.sessionKey,
                           sessionSecret: obj.sessionSecret
                         }
-                        this.option11=option
+                        // this.option11=option
                         this.openApp(option)
                       }
                     })
@@ -1254,26 +1302,26 @@ tableData1:[
 .phoneBtn a{
   display: inline-block;
   width:0.84rem ;
-  height: 0.88rem;
+  height: 0.9rem;
   cursor: pointer;
   border: 0px none;
 }
 .phoneBtn a.white{
-   background: url('../assets/Btn_whitelist_02.png') ;
+   background: url('../assets/Btn_whitelist_02.png') no-repeat center;
    background-size: 100% auto;
 
 }
 .phoneBtn a.whiteActive{
-   background: url('../assets/Btn_whitelist_01.png') ;
+   background: url('../assets/Btn_whitelist_01.png') no-repeat center;
    background-size: 100% auto;
 
 }
 .phoneBtn a.black{
-  background: url('../assets/Btn_blacklist_01.png');
+  background: url('../assets/Btn_blacklist_01.png') no-repeat center;
   background-size: 100% auto;
 }
 .phoneBtn a.blackActive{
-  background: url('../assets/Btn_blacklist_02.png');
+  background: url('../assets/Btn_blacklist_02.png') no-repeat center;
   background-size: 100% auto;
 }
 
