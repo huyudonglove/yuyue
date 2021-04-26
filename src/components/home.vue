@@ -255,8 +255,8 @@
     </el-dialog>
     <!--  orderVisible end -->
       <!--  orderListVisible start -->
-       <div style="margin-top:7.5rem;text-align:center;height:6.5rem;color:#070f26;overflow-y:scroll;font-size:0.4rem;position: fixed;z-index:999999999999;top:0;margin-left:50%;transform: translateX(-50%);width:8rem"  id="searchListMsg" v-if="searchListMsg.length&&orderListVisible">  
-        <div  v-for="(item,i) in searchListMsg" :key="i" style="margin-bottom:0.6rem;" >
+       <div style="margin-top:6.8rem;text-align:center;height:5.7rem;color:#070f26;overflow-y:scroll;font-size:0.4rem;position: fixed;z-index:999999999999;top:0;margin-left:50%;transform: translateX(-50%);width:6.5rem;"  id="searchListMsg" v-if="searchListMsg.length&&orderListVisible">
+        <div  v-for="(item,i) in searchListMsg" :key="i" style="margin-bottom:0.4rem;" >
           <p>
             {{item.bookedDate}}
           </p>
@@ -265,11 +265,11 @@
           </p>
         </div>
         </div>
-      <el-dialog  :visible.sync="orderListVisible" :close-on-click-modal='false' width='90%' class="dialogBg" :show-close='false' top="0.25rem" id="orderListVisible"  style="positon:relative">
+      <el-dialog  :visible.sync="orderListVisible" :close-on-click-modal='false' width='90%' class="dialogBg" :show-close='false' top="0.3rem" id="orderListVisible"  style="positon:relative">
         <!-- <p style="text-align:center;font-weight:700">
           您预约的手机号码是
         </p> -->
-        <p style="text-align:center;font-weight:700;margin-top:4.4rem;font-size:0.54rem;color:#aeb0be;height:0.4rem" >
+        <p style="text-align:center;font-weight:700;margin-top:4rem;font-size:0.54rem;color:#aeb0be;height:0.4rem" >
           {{formOrder.mobile}}
         </p>
         <div style="margin-top:3rem;text-align:center;height:5.5rem;color:#070f26;font-size:0.4rem;" v-if="!searchListMsg.length">
@@ -285,12 +285,12 @@
           </p>
         </div> -->
         </div>
-         <div style="width:0.4rem;height:0.2rem;margin:0px auto;margin-top:-0.5rem;" v-if="searchListMsg.length>3">
+         <div style="width:0.4rem;height:0.2rem;margin:0px auto;margin-top:-1.4rem;" v-if="searchListMsg.length>3">
            <img src="../assets/arrow.png" width="100%" />
         </div>
         <div style="text-align:center">
           <!-- <p>温馨提示</p> -->
-          <p style="margin-top:1.4rem;line-height:0.32rem">
+          <p style="margin-top:1.5rem;line-height:0.32rem">
             请截图保存本页,到场后向工作人员出示
           </p>
           <p>
@@ -376,20 +376,20 @@
     </el-dialog>
     <!--  selectOrderVisible end -->
     <!--  orderSuccessVisible start -->
-      <el-dialog title="" :visible.sync="orderSuccessVisible" class="dialogBg dialogBg2" :show-close='false' top="0.25rem" width='90%' id='orderSuccessVisible'>
+      <el-dialog title="" :visible.sync="orderSuccessVisible" class="dialogBg dialogBg2" :show-close='false' top="0.3rem" width='90%' id='orderSuccessVisible'>
         <!-- <h2 style="text-align:center;font-weight:700">
           恭喜您预约成功！
         </h2> -->
         <!-- <p style="text-align:center;font-weight:700">
           您预约的手机号码是
         </p> -->
-        <p style="text-align:center;font-weight:700;margin-top:4.4rem;font-size:0.54rem;color:#aeb0be;height:0.4rem" >
+        <p style="text-align:center;font-weight:700;margin-top:3.9rem;font-size:0.54rem;color:#aeb0be;height:0.4rem" >
           {{successMsg.mobile}}
         </p>
         <!-- <p style="text-align:center;font-weight:700">
           您的预约时间是
         </p> -->
-        <div style="margin-top:4.5rem;text-align:center;height:4rem;color:#070f26;font-size:0.46rem">
+        <div style="margin-top:3.8rem;text-align:center;height:4rem;color:#070f26;font-size:0.46rem">
           <p>
           {{successMsg.bookedDate}}
           </p>
@@ -399,7 +399,7 @@
         </div>
        <div style="text-align:center">
           <!-- <p>温馨提示</p> -->
-          <p style="margin-top:1.4rem;line-height:0.32rem">
+          <p style="margin-top:1.1rem;line-height:0.32rem">
             请截图保存本页,到场后向工作人员出示
           </p>
           <p>
@@ -460,7 +460,7 @@
     <!--  error end -->
       <!--  phoneList start -->
       <el-dialog title="" :visible.sync="phoneListVisible" :close-on-click-modal='false' width='90%' class="noHeader phoneDialog" :show-close='false' top="0.5rem" id="phoneListVisible">
-          <div style="height:12.8rem;overflow-y:scroll">
+          <div style="height:10.5rem;overflow-y:scroll">
             <el-table
               :data="tableData"
               border
@@ -524,6 +524,7 @@
 import {getSession,getCode,checkVerifyCode,bookedAdd,sequenceList,listByMobile} from '../http/request'
 import { fetchAccessTokenByOpenToken } from '@/api/common/bslogin'
 import commonApi from '@/common/ajax'
+import CallApp from 'callapp-lib';
 import {
   getUID,
   getToken,
@@ -1088,7 +1089,6 @@ tableData1:[
 					if(this.timeOut==-1){
 						clearInterval(this.myInterval)
             this.timeOut=60
-						// document.getElementById("time").innerHTML="倒计时结束"
 					}
 				},1000)
    },
@@ -1100,19 +1100,11 @@ tableData1:[
       let options=arr.join('&')
      //ios
 		if(navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)) {
-			if(option.token){
         	window.location.href =`utopaar://?${options}`; //ios app协议，由ios同事提供
           window.setTimeout(function() {
             window.location.href = `https://robot.utopaxr.com/utopaar?${options}`;
-          }, 2000)
+          }, 500)
           return
-      }else{
-         window.location.href =`utopaar://`; //ios app协议，由ios同事提供
-          window.setTimeout(function() {
-            window.location.href = `https://robot.utopaxr.com/utopaar`;
-          }, 2000)
-          return
-      }
 		}
  
 		if(navigator.userAgent.match(/android/i)) {
@@ -1120,35 +1112,17 @@ tableData1:[
 			var browser = navigator.userAgent.toLowerCase();
 			if(browser.match(/micromessenger/i)) {
 				//微信内置浏览器
-        if(option.token){
           window.location.href =`utopaar://utopa.com.cn?${options}`;
           window.setTimeout(function() {
-            window.location.href = `https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar?${options}`;
-          }, 1000)
+            window.location.href = `https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar&${options}`;
+          }, 500)
           return
-        }else{
-          window.location.href =`utopaar://utopa.com.cn`;
-          window.setTimeout(function() {
-            window.location.href = `https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar`;
-          }, 1000)
-          return
-        }
-				
 			} else {
-          if(option.token){
             window.location.href = `utopaar://utopa.com.cn?${options}`;//安卓协议，由安卓同事提供
             window.setTimeout(function() {
-              window.location.href = `https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar?${options}`
-            }, 1000)
+              window.location.href = `https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar&${options}`
+            }, 500)
             return
-          }else{
-            window.location.href = `utopaar://utopa.com.cn`;//安卓协议，由安卓同事提供
-            window.setTimeout(function() {
-              window.location.href = `https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar`
-            }, 1000)
-            return
-          }
-				
 				}
 		}
    },
@@ -1323,6 +1297,11 @@ tableData1:[
 .phoneBtn a.blackActive{
   background: url('../assets/Btn_blacklist_02.png') no-repeat center;
   background-size: 100% auto;
+}
+
+.el-dialog{
+      -webkit-box-shadow: 0 0px 0px rgb(0 0 0 / 30%);
+      box-shadow: 0 0px 0px rgb(0 0 0 / 30%);
 }
 
 </style >

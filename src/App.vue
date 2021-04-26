@@ -131,7 +131,7 @@ export default {
 .dialogBg .el-dialog{
   border-radius:0px;
   background: url('./assets/dialogBg1.png') no-repeat center top;
-  background-size:auto  100%;
+  background-size:auto  90%;
   height:19rem ;
 }
 .dialogBg3 .el-dialog{
@@ -143,7 +143,7 @@ export default {
 .dialogBg2 .el-dialog{
   border-radius:0px;
   background: url('./assets/dialogBg2.png') no-repeat center top;
-  background-size:auto  100%;
+  background-size:auto  90%;
   height:19rem ;
 }
 .el-button{
