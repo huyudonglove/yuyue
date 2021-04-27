@@ -74,10 +74,11 @@
  */
 /* Javascript Bridge */
 /* eslint-disable no-new, no-unused-vars, no-undef */
+import miniProgramBridge from './setupMpWebViewJavascriptBridge'
 const ua = navigator.userAgent
 const isIos = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
 const isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Linux') > -1
-const isFlutter = ua.indexOf('flutter') > -1
+
 const bridges = (() => {
   let BridgeInstance = null
   const getJSBridge = (callback, reInit = true) => {
@@ -121,55 +122,33 @@ const bridges = (() => {
     }, 0)
   }
 
-  const setupFlutterWebViewJavascriptBridge = callback => {
-    if (!window.flutterWVCallback) {
-      window.flutterWVCallback = {}
+  const setupMPWebViewJavascriptBridge = callback => {
+    // if (!window.WebViewJavascriptBridge) {
+    //   window.miniProgramWVCallback = {}
+    // }
+    if (window.WebViewJavascriptBridge) {
+      return bridgeCallbackProxy(callback)(WebViewJavascriptBridge)
     }
-    // 闭包数据
-    let count = 1
-    const bridge = {
-      callHandler: (name, data, cb) => {
-        try {
-          if (name) {
-            const callbackName = `callback_${name}__${count}_`
-            count++
-            window[name].postMessage(JSON.stringify({ data, callbackName }))
-            // flutter端拿到callbackName，回调执行js方法：
-            // _controller.evaluateJavascript('flutterWVCallback${callbackName}($data)')
-            if (cb) {
-              window.flutterWVCallback[callbackName] = (...args) => {
-                cb(...args)
-                // 释放函数
-                window.flutterWVCallback[callbackName] = null
-              }
-            }
-          }
-        } catch (err) {
-          console.log(err)
-        }
-      },
-      registerHandler: (name, cb) => {
-        try {
-          if (cb) {
-            window.flutterWVCallback[name] = (...args) => {
-              cb(...args)
-            }
-          }
-        } catch (e) {
-          console.log(e, '注册有误')
-        }
-      }
-    }
-    return bridgeCallbackProxy(callback)(bridge)
+    console.log('setupMPWebViewJavascriptBridge')
+    window.WebViewJavascriptBridge = miniProgramBridge.miniProgramBridge
+    return bridgeCallbackProxy(callback)(miniProgramBridge.miniProgramBridge)
   }
   const WebViewJsBridge = {
     setup: (callback) => {
       if (BridgeInstance) {
         return callback ? callback(BridgeInstance) : BridgeInstance
       }
-      isFlutter && setupFlutterWebViewJavascriptBridge(callback)
-      isIos && setupIOSWebViewJavascriptBridge(callback)
-      isAndroid && setupAndroidWebViewJavascriptBridge(callback)
+      miniProgramBridge.checkMiniProgram().then(res => {
+        console.log('checkMiniProgram: ', res)
+
+        if (res) setupMPWebViewJavascriptBridge(callback)
+        else {
+          isIos && setupIOSWebViewJavascriptBridge(callback)
+          isAndroid && setupAndroidWebViewJavascriptBridge(callback)
+        }
+      })
+      // isIos && setupIOSWebViewJavascriptBridge(callback)
+      // isAndroid && setupAndroidWebViewJavascriptBridge(callback)
     }
   }
   return {

@@ -521,10 +521,11 @@
 </template>
 
 <script>
-import {getSession,getCode,checkVerifyCode,bookedAdd,sequenceList,listByMobile} from '../http/request'
+import {getSession,getCode,checkVerifyCode,bookedAdd,sequenceList,listByMobile,apkpathByKey} from '../http/request'
 import { fetchAccessTokenByOpenToken } from '@/api/common/bslogin'
 import commonApi from '@/common/ajax'
 import CallApp from 'callapp-lib';
+import { openArApp } from '@/common/utilsApp'
 import {
   getUID,
   getToken,
@@ -553,6 +554,9 @@ export default {
       };
     return {
       a:'',
+      androidDown:'',
+      key:'key_360',
+      loading:null,
       tableData:[],
       tableData2:[
       {"serie":"Vivo X系列","name":"X50 Pro+","version":"10","date":"2020年7月"},
@@ -873,8 +877,6 @@ tableData1:[
     }
   },
   created () {
-
-
     if(this.$route.query.platform){
        this.platform= parseInt(this.$route.query.platform);
        this.errorVisible=false//错误信息
@@ -886,6 +888,7 @@ tableData1:[
       this.isApp = true
     })
     this.getSession();
+    this.getApkpathByKey();
     let d =new Date();
     let resDate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
     this.formSize.bookedDate=resDate
@@ -942,6 +945,12 @@ tableData1:[
         this.sessionSecret=res.data.sessionSecret
       })
     },
+    // 安卓下载地址
+    getApkpathByKey(){
+      apkpathByKey({key:this.key}).then(res=>{
+        this.androidDown=res.data
+      })
+    },
     //获取验证码
     getMobildCode(type){
       this.setMyInterval()
@@ -985,8 +994,15 @@ tableData1:[
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+        this.loading = this.$loading({
+              lock: true,
+              text: '加载中',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
           if(this.changeType==1){
             bookedAdd({...this.formSize,sessionKey:this.sessionKey,sessionSecret:this.sessionSecret,platform:this.platform,source:1}).then(res=>{
+             this.loading.close();
              this.msgCode=res.code
              if(res.code){
              if(res.code==1){
@@ -996,7 +1012,6 @@ tableData1:[
                this.orderFailVisible=true
                this.noScroll('#orderFailVisible');
              }
-              
                }else{
                 this.successMsg=res.data
                 this.selectOrderVisible=false;
@@ -1006,9 +1021,12 @@ tableData1:[
                 this.getCodeAbeled=false;
                 this.timeOut=60
                }
-          })
+          }).catch(u=>{
+            this.loading.close();
+          });
           }else if(this.changeType==2){
              bookedAdd({...this.form,sessionKey:this.sessionKey,sessionSecret:this.sessionSecret,platform:this.platform,source:2}).then(res=>{
+               this.loading.close();
                if(res.code){
                  this.$message.error(res.msg);
                }else{
@@ -1019,7 +1037,9 @@ tableData1:[
                  this.getCodeAbeled=false
                  this.$refs[formName].resetFields();
                }
-          })
+          }).catch(u=>{
+          this.loading.close();
+          });
           }
           
           
@@ -1058,7 +1078,14 @@ tableData1:[
    searchOrder(formName){
      this.$refs[formName].validate((valid) => {
         if (valid) {
-         listByMobile({...this.formOrder,sessionKey:this.sessionKey,sessionSecret:this.sessionSecret,source:1}).then(res=>{
+        this.loading = this.$loading({
+          lock: true,
+          text: '加载中',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        listByMobile({...this.formOrder,sessionKey:this.sessionKey,sessionSecret:this.sessionSecret,source:1}).then(res=>{
+        this.loading.close();
         if(res.code){
           this.$message.error(res.msg);
         }else{
@@ -1070,7 +1097,9 @@ tableData1:[
         // this.$refs[formName].resetFields();
         this.getCodeAbeled=false
             }
-        })
+        }).catch(u=>{
+        this.loading.close();
+      });
         } else {
           console.log('error submit!!');
           return false;
@@ -1106,21 +1135,34 @@ tableData1:[
           }, 500)
           return
 		}
- 
 		if(navigator.userAgent.match(/android/i)) {
 			//Android
 			var browser = navigator.userAgent.toLowerCase();
 			if(browser.match(/micromessenger/i)) {
 				//微信内置浏览器
           window.location.href =`utopaar://utopa.com.cn?${options}`;
-          window.setTimeout(function() {
-            window.location.href = `https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar&${options}`;
+          window.setTimeout(()=>{
+            // window.location.href = `http://zhushou.360.cn/detail/index/soft_id/4174760?${options}`;
+            if(this.key=='key_360'){
+              window.location.href = `${this.androidDown}?${options}`
+            }else if(this.key=='key_qq'){
+              window.location.href = `${this.androidDown}&${options}`
+            }
           }, 500)
           return
-			} else {
+			} 
+      else if(this.isApp){
+        // openArApp(options);
+      }else {
             window.location.href = `utopaar://utopa.com.cn?${options}`;//安卓协议，由安卓同事提供
-            window.setTimeout(function() {
-              window.location.href = `https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar&${options}`
+            window.setTimeout(()=> {
+              // window.location.href = `http://zhushou.360.cn/detail/index/soft_id/4174760?${options}`
+            if(this.key=='key_360'){
+              window.location.href = `${this.androidDown}?${options}`
+            }else if(this.key=='key_qq'){
+              window.location.href = `${this.androidDown}&${options}`
+            }
+            
             }, 500)
             return
 				}
@@ -1163,7 +1205,7 @@ tableData1:[
                           //  this.cookcook=r+'wu缓存'
                           if (r.code === 0) {
                             let option = {
-                              appId: '00096efe4ee1450eb8481e8dae5fb447',
+                              appId: '',
                               // appId: this.info.sourceId,
                               token: rep.data.accessToken,
                               userId: re.data.uid,
@@ -1180,7 +1222,7 @@ tableData1:[
                           getAuthorityInfo() && JSON.parse(getAuthorityInfo())
                           // this.cookcook=obj+'有缓存'
                         let option = {
-                          appId: '00096efe4ee1450eb8481e8dae5fb447',
+                          appId: '',
                           // appId: this.info.sourceId,
                           token: rep.data.accessToken,
                           userId: re.data.uid,
