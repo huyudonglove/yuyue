@@ -4,6 +4,13 @@
        <!-- {{isApp}}{{token}} {{option11}} cookcook:{{cookcook}} r:{{r}} getAuthorityInfo:{{getAuthorityInfo}} -->
    </div>
     <div class="layout">
+      <!-- <div>
+        <el-input v-model="input">
+
+        </el-input>
+        <el-button @click="copyText">复制</el-button>
+        <el-button @click="$router.push('/utopa')">111</el-button>
+      </div> -->
       <div>
         <img src="../assets/Image_poster.png" width="100%"/>
       </div>
@@ -419,7 +426,7 @@
         <span style="text-align:center;font-weight:700;display:block;line-height:1rem">
           您已预约成功
         </span>
-        <span style="text-align:center;font-weight:700;display:block;line-height:1">请下载Utopa AR APP进行体验</span>
+        <span style="text-align:center;font-weight:700;display:block;line-height:1">请下载UtopaAR APP进行体验</span>
       <div style="text-align:center">
         <a href="javascript:;" id="openApp" class="downLoad newBtn"  @click="downLoad" style="margin:0.3rem 0">点击下载</a>
         <span style="display:block;font-size:0.26rem;color:#707379">若已下载，点击即可体验</span>
@@ -513,7 +520,7 @@
             </a>
           </div>
       </el-dialog>
-     
+      
     <!--  phoneList end -->
     </div>
   </div>
@@ -873,7 +880,8 @@ tableData1:[
      disabledDate(time) {
       return time.getTime() < Date.now() - 24 * 60 * 60 * 1000;
      } 
-    }
+    },
+    input:'http://zhushou.360.cn/detail/index/soft_id/4174760'
     }
   },
   created () {
@@ -1153,6 +1161,7 @@ tableData1:[
 			} 
       else if(this.isApp){
         // openArApp(options);
+        this.$router.push('/utopa')
       }else {
             window.location.href = `utopaar://utopa.com.cn?${options}`;//安卓协议，由安卓同事提供
             window.setTimeout(()=> {
@@ -1263,7 +1272,17 @@ tableData1:[
      this.getCodeAbeled=false;
      clearInterval(this.myInterval)
      this.timeOut=60
-   }
+   },
+   copyText() {
+      var text = '12333456';
+      let oInput = document.createElement('input');
+      oInput.style.opacity=0;
+      oInput.value  = text; // 修改文本框的内容
+      document.body.appendChild(oInput);
+      oInput.select();// 选中文本
+      document.execCommand("copy"); // 执行浏览器复制命令
+     // alert("复制成功");
+    }
   },
   watch: {
     $route(to){
