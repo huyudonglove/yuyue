@@ -40,14 +40,17 @@ export default {
             },3000)    
         },
         apkpathByKey(){
-            apkpathByKey({key:"key_360"}).then(v=>{
-                !v.code&&(()=>{
-                    this.urlC=v.data
-                })();
-                v.code&&(()=>{
-                    this.urlC='https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar'
-                })();
-            })
+            let href=window.location.href;
+            this.urlC=href.split("#")[0]+"android.html";
+
+            // apkpathByKey({key:"key_360"}).then(v=>{
+            //     !v.code&&(()=>{
+            //         this.urlC=v.data
+            //     })();
+            //     v.code&&(()=>{
+            //         this.urlC='https://a.app.qq.com/o/simple.jsp?pkgname=com.utopa.utopaar'
+            //     })();
+            // })
         }
     },
     mounted(){
@@ -58,7 +61,7 @@ export default {
 <style scoped>
 .d1{
     background: url(../assets/b1.png) no-repeat center;
-    background-size: 100%;
+    background-size: 100% 100%;
     position:absolute;
     width:100%;
     height: 100%;

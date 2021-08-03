@@ -279,10 +279,10 @@
         <p style="text-align:center;font-weight:700;margin-top:4rem;font-size:0.54rem;color:#aeb0be;height:0.4rem" >
           {{formOrder.mobile}}
         </p>
-        <div style="margin-top:3rem;text-align:center;height:5.5rem;color:#070f26;font-size:0.4rem;" v-if="!searchListMsg.length">
+        <div style="margin-top:2.5rem;text-align:center;height:4.5rem;color:#070f26;font-size:0.4rem;" v-if="!searchListMsg.length">
           您没有预约场次!
         </div>
-        <div style="margin-top:2rem;text-align:center;height:6.5rem;color:#070f26;overflow-y:scroll;font-size:0.4rem;positon:absolute;z-index:99999999;top:1rem" v-if="searchListMsg.length" id="searchListMsg" >  
+        <div style="margin-top:2rem;text-align:center;height:6.3rem;color:#070f26;overflow-y:scroll;font-size:0.4rem;positon:absolute;z-index:99999999;top:1rem" v-if="searchListMsg.length" id="searchListMsg" >  
         <!-- <div  v-for="(item,i) in searchListMsg" :key="i" style="margin-bottom:0.6rem;" >
           <p>
             {{item.bookedDate}}
@@ -297,11 +297,11 @@
         </div>
         <div style="text-align:center">
           <!-- <p>温馨提示</p> -->
-          <p style="margin-top:1.5rem;line-height:0.32rem">
+          <p style="margin-top:1.5rem;line-height:0.3rem">
             请截图保存本页,到场后向工作人员出示
           </p>
           <p>
-            并务必携带<span style="color:#f04646;line-height:0.32rem">身份证或其他有效证件</span>现场领取眼镜
+            并务必携带<span style="color:#f04646;line-height:0.3rem">身份证或其他有效证件</span>现场领取眼镜
           </p>
         </div>
       <div style="text-align:center">
@@ -902,7 +902,8 @@ tableData1:[
     this.formSize.bookedDate=resDate
   },
   mounted() {
-    this.getAuthorityInfo=getAuthorityInfo()
+    this.getAuthorityInfo=getAuthorityInfo();
+    //this.$router.push('/utopa')
     // console.log(this.getAuthorityInfo,'this.getAuthorityInfo')
   },
   computed: {
@@ -1272,17 +1273,7 @@ tableData1:[
      this.getCodeAbeled=false;
      clearInterval(this.myInterval)
      this.timeOut=60
-   },
-   copyText() {
-      var text = '12333456';
-      let oInput = document.createElement('input');
-      oInput.style.opacity=0;
-      oInput.value  = text; // 修改文本框的内容
-      document.body.appendChild(oInput);
-      oInput.select();// 选中文本
-      document.execCommand("copy"); // 执行浏览器复制命令
-     // alert("复制成功");
-    }
+   }
   },
   watch: {
     $route(to){
